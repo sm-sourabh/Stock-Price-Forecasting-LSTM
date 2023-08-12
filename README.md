@@ -36,12 +36,9 @@ Run the stock_app.py script to launch the interactive dashboard built with Plotl
 
 ## Results
 
-![Dashboard](https://github.com/Meet110201/Stock-Price-Prediction/assets/73066764/c0326b96-2c19-4797-be15-904cbb7c302c)
-
-
-
-![newplot (1)](https://github.com/Meet110201/Stock-Price-Prediction/assets/73066764/4b08f0d3-2a92-4a32-ae2a-d96e144576f0)
-![newplot](https://github.com/Meet110201/Stock-Price-Prediction/assets/73066764/4f61c3bb-e208-46dd-af67-a169d75d1af7)
+![Dashboard](https://github.com/Meet110201/Stock-Price-Prediction/blob/main/images/Dashboard.jpg)
+![newplot (1)](https://github.com/Meet110201/Stock-Price-Prediction/blob/main/images/newplot%20(1).png)
+![newplot](https://github.com/Meet110201/Stock-Price-Prediction/blob/main/images/newplot.png)
 
 
 
