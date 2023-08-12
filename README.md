@@ -34,6 +34,17 @@ Follow the instructions in the code/ directory to train the LSTM model using the
 ## Dashboard Creation:
 Run the stock_app.py script to launch the interactive dashboard built with Plotly Dash. Access the dashboard in your web browser to perform detailed stock analysis and visualization.
 
+## Results
+
+![Dashboard](https://github.com/Meet110201/Stock-Price-Prediction/assets/73066764/c0326b96-2c19-4797-be15-904cbb7c302c)
+
+
+
+![newplot (1)](https://github.com/Meet110201/Stock-Price-Prediction/assets/73066764/4b08f0d3-2a92-4a32-ae2a-d96e144576f0)
+![newplot](https://github.com/Meet110201/Stock-Price-Prediction/assets/73066764/4f61c3bb-e208-46dd-af67-a169d75d1af7)
+
+
+
 ## Contributing
 Contributions to this project are highly appreciated! If you have enhancements, bug fixes, or new features to suggest, please feel free to open a pull request.
 
