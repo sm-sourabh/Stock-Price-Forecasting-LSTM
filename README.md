@@ -23,7 +23,7 @@ The repository is organized as follows:
 ### Clone the Repository:
 
 ## Copy code
-git clone https://github.com/your-username/lstm-driven-stock-price-forecasting.git
+gh repo clone your-username/Stock-Price-Prediction
 
 ## Install Dependencies:
 Navigate to the code/ directory and install the required packages using:
