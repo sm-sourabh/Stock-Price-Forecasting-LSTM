@@ -1,1 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;800&family=Open+Sans:ital,wght@0,300;0,400;0,700;1,300&display=swap');
+
+
+body {
+    background-color: #000000; /* Set the background color */
+}
+
+h1 {
+    color: #ffffff;
+}
