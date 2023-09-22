@@ -1,8 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;800&family=Open+Sans:ital,wght@0,300;0,400;0,700;1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;800&family=Open+Sans:ital,wght@0,300;0,400;0,700;1,300&family=Play:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
 
 
 body {
     background-color: #ffffff; /* Set the background color */
+}
+
+
+.container {
+    display: flex;
+    justify-content: space-between;
 }
 
 h1 {
@@ -10,7 +16,7 @@ h1 {
     /* color: #f5f3f4; */
     font-weight: bold;
     text-align: center;
-    font-family: "Open Sans";
+    font-family: "Montserrat";
 }
 
 h2 {
@@ -18,7 +24,7 @@ h2 {
     /* color: #f5f3f4; */
     font-weight: normal;
     text-align: center;
-    font-family: "Open Sans";
+    font-family: "Play";
 
 }
 
@@ -27,7 +33,7 @@ h3 {
     /* color: #f5f3f4; */
     font-weight: normal;
     text-align: center;
-    font-family: "Open Sans";
+    font-family: "Play";
 }
 
 
@@ -42,24 +48,30 @@ h3 {
     /* padding: 10px 20px; */
     cursor: pointer;
     text-align: center;
-    font-family: "Open Sans";
+    font-family: "Play";
     font-size: large;
     font-weight: bold;
-    transition: background-color 0.5s;
+    transition: 0.5s;
 }
 
 .custom-tab:hover {
-    /* background-color: #ba181b; */
+    /* background-color: #7918ba; */
+    font-size: x-large;
 }
 
 
 /* Style the tab content */
 .custom-content {
-    padding: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 15px;
     border: 1px solid #d1d1d1;
     border-radius: 25px 25px 25px 25px;
     background-color: white;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    width: fit-content;
+    align-items: center;
     /* color: red; */
 }
 
@@ -68,7 +80,8 @@ h3 {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 60%;
+    min-width: 150px;
+    width: fit-content;
     align-items: center;
 
 }
@@ -78,44 +91,96 @@ h3 {
 /* table styling */
 
 #metrics-table {
-    display:flex;
-    justify-content: center;
-    width: 40%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
     align-items: center;
-    /* margin-left: auto; */
-    /* margin-right: auto; */
-    margin: 0 auto;
-    /* font-family: Arial, sans-serif; */
-    /* border-collapse: collapse; */
-    /* border: 2px solid #0074D9; */
+    text-align: center;
+    border-collapse: collapse;
+    width: 70%;
 }
 
 /* Style table headers */
 #metrics-table th {
-    /* background-color: #0074D9; */
-    /* color: white; */
-    padding: 10px;
     text-align: center;
+    background-color: #0074D9;
+    color: #ffffff;
 }
 
-/* Style table rows */
 #metrics-table tr:nth-child(even) {
-    /* background-color: #f2f2f2; */
+    background-color: #f2f2f2;
 }
 
 #metrics-table tr:hover {
-    /* background-color: #000000; */
-    /* cursor: pointer; */
+    background-color: transparent;
 }
 
 /* Style table cells */
 #metrics-table td {
     padding: 8px;
+    border: 1px solid #ccc;
+}
+
+
+
+/* pane */
+
+.pane {
+    display: flex;
+    /* justify-content: space-between; */
+    /* align-items: flex-start; */
+    width:100%;
+    /* border: 1px solid #000000; */
+    text-align: center;
+    /* position: inherit; */
+    margin-bottom: 1%;
+    /* height: max-content; */
+}
+
+
+.pane.pane1 {
+    display: flex;
+    flex-direction: column;
+    width:40%;
+    text-align: center;
+    /* border: 1px solid #000000; */
+    /* margin-right: 5%; */
+}
+
+.pane.pane2{
+    display: flex;
+    flex-direction: column;
+    width:60%;
     text-align: center;
 }
 
-/* Add a border around the table */
-#metrics-table, th, td {
-    /* border: 1px solid; */
+
+/* Style the H1 headers in each pane */
+.pane h1 {
+    font-size: 30px;
+    /* color: #f5f3f4; */
+    font-weight: bold;
+    text-align: center;
+    font-family: "Montserrat";
+}
+
+.pane h2 {
+    font-size: 23px;
+    /* color: #f5f3f4; */
+    font-weight: normal;
+    text-align: center;
+    font-family: "Play";
 
 }
+
+.pane h3 {
+    font-size: 18px;
+    /* color: #f5f3f4; */
+    font-weight: normal;
+    text-align: center;
+    font-family: "Play";
+}
+
+/* .pane .graph {
+    height: 400px;
+} */
