@@ -184,3 +184,48 @@ h3 {
 /* .pane .graph {
     height: 400px;
 } */
+
+
+.dash-checklist {
+    display: flex;
+    justify-content: center; /* Center the buttons horizontally */
+    align-items: center; /* Center the buttons vertically */
+}
+
+/* Style the label container (each toggle button) */
+.dash-checklist label {
+    display: flex;
+    padding: 8px;
+    border: 1px solid #d1d1d1;
+    border-radius: 15px;
+    background-color: #ffffff;
+    color: #000000;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    width: fit-content;
+    align-items: center;
+    margin: 5px;
+    user-select: none;
+}
+
+.dash-checklist label::selection{
+    background-color: #000000;
+}
+
+
+/* Style the checkbox itself (hide it) */
+.dash-checklist input[type="checkbox"] {
+    /* display: none; */
+    
+}
+
+/* Style the checkbox label when checked (active) */
+/* .dash-checklist input[type="checkbox"]:checked + label {
+    background-color: #000000; 
+    border: 1px solid #ffffff; 
+    color: #ffffff;
+} */
+
+/* Style the label text */
+/* .dash-checklist label span {
+    vertical-align: middle;
+} */
