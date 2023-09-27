@@ -1,9 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;800&family=Open+Sans:ital,wght@0,300;0,400;0,700;1,300&family=Play:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
 
+:root {
+    --bg: #000000;
+    --title: #ffffff;
+    --tab: #000000;
+    --tab-text: #ffffff;
+    --custom-tab-bg: #000000;
+    --custom-tab-text: #ffffff;
+    --custom-tab-bg-hover: #f11717;
+    --head-graph:#ffffff;
+    --head-h2: #ffffff;
+    --head-h3: #ffffff;
+    --custom-check-bg: #000000;
+    --custom-check-text: #ffffff;
+
+}
 
 body {
-    background-color: #ffffff; /* Set the background color */
+    background-color: var(--bg); /* Set the background color */
+    margin: 0px 80px 0px 80px;
 }
+
 
 
 .container {
@@ -12,16 +29,16 @@ body {
 }
 
 h1 {
-    font-size: 30px;
-    /* color: #f5f3f4; */
+    font-size: 38px;
+    color: var(--title);
     font-weight: bold;
     text-align: center;
     font-family: "Montserrat";
 }
 
 h2 {
-    font-size: 23px;
-    /* color: #f5f3f4; */
+    font-size: 30px;
+    color: var(--head-h2);
     font-weight: normal;
     text-align: center;
     font-family: "Play";
@@ -30,7 +47,7 @@ h2 {
 
 h3 {
     font-size: 18px;
-    /* color: #f5f3f4; */
+    color:var(--head-h3);
     font-weight: normal;
     text-align: center;
     font-family: "Play";
@@ -41,8 +58,8 @@ h3 {
 
 /* Style the tab labels */
 .custom-tab {
-    /* background-color: #ffffff; */
-    /* color: #000000; */
+    /* background-color: var(--custom-tab-bg); */
+    /* color: var(--custom-tab-text); */
     border: none;
     /* border-radius: 15px 15px 0 0; */
     /* padding: 10px 20px; */
@@ -55,7 +72,7 @@ h3 {
 }
 
 .custom-tab:hover {
-    /* background-color: #7918ba; */
+    background-color: var(--custom-tab-bg-hover);
     font-size: x-large;
 }
 
@@ -66,11 +83,12 @@ h3 {
     margin-left: auto;
     margin-right: auto;
     padding: 15px;
-    border: 1px solid #d1d1d1;
-    border-radius: 25px 25px 25px 25px;
-    background-color: white;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    width: fit-content;
+    /* border: 1px solid #d1d1d1; */
+    border-radius: 0px;
+    background-color: var(--custom-tab-bg);
+    columns: var(--custom-tab-text);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+    /* width: auto; */
     align-items: center;
     /* color: red; */
 }
@@ -78,12 +96,13 @@ h3 {
 
 .dropdown-menu {
     display: block;
-    margin-left: auto;
-    margin-right: auto;
-    min-width: 150px;
+    margin: -10px auto 15px auto;
+    /* margin-left: auto; */
+    /* margin-right: auto; */
+    /* margin-bottom: 15px; */
+    min-width: 300px;
     width: fit-content;
     align-items: center;
-
 }
 
 
@@ -197,13 +216,13 @@ h3 {
     display: flex;
     padding: 8px;
     border: 1px solid #d1d1d1;
-    border-radius: 15px;
-    background-color: #ffffff;
-    color: #000000;
+    border-radius: 0px;
+    background-color: var(--custom-check-bg);
+    color: var(--custom-check-text);
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     width: fit-content;
     align-items: center;
-    margin: 5px;
+    margin: -10px 12px 20px 12px;
     user-select: none;
 }
 
@@ -214,8 +233,9 @@ h3 {
 
 /* Style the checkbox itself (hide it) */
 .dash-checklist input[type="checkbox"] {
-    /* display: none; */
-    
+    /* display:none; */
+    background-color: #d1d1d1;
+    color: #000000;
 }
 
 /* Style the checkbox label when checked (active) */
