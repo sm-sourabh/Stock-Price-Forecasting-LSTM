@@ -1,15 +1,24 @@
+# %% [markdown]
+## PYTHON LIBRARIES
+
+# %% [markdown]
+# LOADING PYTHON LIBRARIES
 # %%
+# libraries
 import pandas as pd
 import numpy as np
 import seaborn as sns
 import yfinance as yf
 import matplotlib.pyplot as plt
 
+
 from keras.models import Sequential
 from keras.layers import LSTM,Dropout,Dense
 from matplotlib.pylab import rcParams
 from sklearn.preprocessing import MinMaxScaler
 
+# %% [markdown]
+# DATA EXTRACTION
 # %%
 def extract_data(ticker_symbol,csv_location="data/"):
     stock_data = yf.download(ticker_symbol, period='max')
@@ -28,20 +37,29 @@ if __name__ == "__main__":
 # %%
 rcParams['figure.figsize']=20,10
 
+# %% [markdown]
+# DATA SCALING
 # %%
 scaler=MinMaxScaler(feature_range=(0,1))
 
+# %% [markdown]
+# LOADING THE CSV FILE
 # %%
 df=pd.read_csv("data/TATACONSUM.NS_historical_data.csv")
 
 # %%
+# ploting the data on a line graph
 sns.set(rc={'figure.figsize' :(20,5)})
 df['Open'].plot(linewidth=1,color='blue')
 
 # %%
+# chaning the index to Date
 df["Date"]=pd.to_datetime(df.Date,format="%Y-%m-%d")
 df.index=df["Date"]
 
+
+# %% [markdown]
+# PLOTING ALL THE VARIABLES
 # %%
 cols_plot=['Open','High','Low','Close','Adj Close']
 colors = ['blue', 'green', 'red', 'purple', 'orange']
@@ -63,6 +81,7 @@ plt.plot(df["Close"],label='Close Price history')
 
 
 # %%
+# data sorting 
 data=df.sort_index(ascending=True,axis=0)
 new_dataset=pd.DataFrame(index=range(0,len(df)),columns=['Date','Close'])
 
@@ -74,7 +93,8 @@ new_dataset.drop("Date",axis=1,inplace=True)
 
 final_dataset=new_dataset.values
 
-
+# %% [markdown]
+# DATA SPLIT INTO TEST AND TRAIN
 # %%
 total_sample = final_dataset.shape[0]
 train_sample = int(0.7 * total_sample)
@@ -103,6 +123,8 @@ for i in range(60,len(train_data)):
 x_train_data,y_train_data=np.array(x_train_data),np.array(y_train_data)
 x_train_data=np.reshape(x_train_data,(x_train_data.shape[0],x_train_data.shape[1],1))
 
+# %% [markdown]
+# LSTM MODEL BUILDING
 # %%
 lstm_model=Sequential()
 lstm_model.add(LSTM(units=50,return_sequences=True,input_shape=(x_train_data.shape[1],1)))
@@ -133,15 +155,19 @@ closing_price=lstm_model.predict(X_test)
 closing_price=scaler.inverse_transform(closing_price)
 
 # %%
+# saving the outcome in .h5 file
 lstm_model.save("data/saved_lstm_model.h5")
 
 # %%
+# ploting the outputs
 train_data=new_dataset[:train_sample]
 valid_data=new_dataset[train_sample:]
 valid_data['Predictions']=closing_price
 plt.plot(train_data["Close"])
 plt.plot(valid_data[['Close',"Predictions"]])
 
+# %% [markdown]
+## GRAPH PLOTING
 # %%
 dpi = 600
 plt.figure(figsize=(16,8),dpi=dpi)
