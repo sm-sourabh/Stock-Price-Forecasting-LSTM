@@ -38,6 +38,7 @@ df = pd.read_csv("data/stock_data.csv")
 # index formatting
 df_nse["Date"]=pd.to_datetime(df_nse.Date,format="%Y-%m-%d")
 df_nse.index=df_nse['Date']
+df_nse = df_nse.sort_index(ascending=False, axis=0)
 
 # %%
 # data sorting
@@ -137,6 +138,20 @@ r2 = r2_score(valid["Close"], valid["Predictions"])
 print("r-squared_score",r2)
 
 # %%
+
+recent_data = valid.tail(4)
+
+recent_data['Close'] = pd.to_numeric(recent_data['Close'], errors='coerce')
+recent_data['Predictions'] = pd.to_numeric(recent_data['Predictions'], errors='coerce')
+
+recent_data.loc[:, 'Close'] = recent_data['Close'].apply(lambda x: round(x,2))
+recent_data.loc[:, 'Predictions'] = recent_data['Predictions'].apply(lambda x: round(x,2))
+
+recent_data['Percentage Change'] = ((recent_data['Predictions'] - recent_data['Close']) / recent_data['Close']) * 100
+recent_data['Percentage Change'] = recent_data['Percentage Change'].apply(lambda x: round(x,2))
+recent_data['Date'] = recent_data.index
+
+# %%
 regression_metrics = {
     'MAE': mae,
     'MSE': mse,
@@ -200,6 +215,17 @@ app.layout = html.Div([
         				],
         				data=[{'Metric': metric, 'Value': value} for metric, value in regression_metrics.items()],
                 	),
+                    html.H2("Last Updates", className='custom-content'),
+					dash_table.DataTable(
+        				id='update-table',
+        				columns=[
+                            {'name': 'Date', 'id': 'Date'},
+                            {'name': 'Close', 'id': 'Close'},
+                            {'name': 'Predicted Close', 'id': 'Predictions'}, 
+                            {'name': 'Percentage Change', 'id': 'Percentage Change'}, 
+                        ],
+        				data=recent_data.to_dict('records'),
+                	),
 				], className='pane pane1' ),
             
 				# right pane
@@ -227,57 +253,6 @@ app.layout = html.Div([
 			
 		]),
         
-        # dcc.Tab(label='NSE-TATAGLOBAL Stock Data', className='custom-tab', children=[
-		# 	html.Div([
-		# 		html.H2("Actual closing price", className='custom-content'),
-		# 		dcc.Graph(
-		# 			id="Actual Data",
-		# 			figure={
-		# 				"data":[
-		# 					go.Scatter(
-		# 						x=train.index,
-		# 						y=train["Close"],
-		# 						mode='lines'
-		# 					)
-
-		# 				],
-		# 				"layout":go.Layout(
-		# 					title='Actual Closing Rate(2013-2014)',
-		# 					xaxis={'title':'Date'},
-		# 					yaxis={'title':'Closing Rate'}
-		# 				)
-		# 			}
-		# 		),
-		# 		html.H2("LSTM Predicted closing price", className='custom-content'),
-		# 		dcc.Graph(
-		# 			id="Predicted Data",
-		# 			figure={
-		# 				"data":[
-		# 					go.Scatter(
-		# 						x=valid.index,
-		# 						y=valid["Predictions"],
-		# 						mode='lines'
-		# 					)
-		# 				],
-		# 				"layout":go.Layout(
-		# 					title='Predicted Closing Rate(2017-2018)',
-		# 					xaxis={'title':'Date'},
-		# 					yaxis={'title':'Closing Rate'}
-		# 				)
-		# 			}
-		# 		),
-        #         html.H2("Model Metrics Table", className='custom-content'),
-        #         dash_table.DataTable(
-        # 			id='metrics-table',
-        # 			columns=[
-        # 			    {'name': 'Metric', 'id': 'Metric'},
-        # 			    {'name': 'Value', 'id': 'Value'}
-        # 			],
-        # 			data=[{'Metric': metric, 'Value': value} for metric, value in regression_metrics.items()]
-        #         ),
-		# 	])        		
-        # ]),
-
 		# tab2
         dcc.Tab(label='NSE-TATAGLOBAL Stock Analysis',className='custom-tab', children=[
             html.Div([

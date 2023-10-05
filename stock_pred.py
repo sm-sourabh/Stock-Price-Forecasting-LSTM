@@ -97,7 +97,7 @@ final_dataset=new_dataset.values
 # DATA SPLIT INTO TEST AND TRAIN
 # %%
 total_sample = final_dataset.shape[0]
-train_sample = int(0.7 * total_sample)
+train_sample = int(0.8 * total_sample)
 
 # %%
 train_data=final_dataset[0:train_sample,:]
@@ -133,7 +133,7 @@ lstm_model.add(Dense(1))
 
 # %%
 lstm_model.compile(loss='mean_squared_error',optimizer='adam')
-lstm_model.fit(x_train_data,y_train_data,epochs=1,batch_size=1,verbose='verbose=2')
+lstm_model.fit(x_train_data,y_train_data,epochs=10,batch_size=1,verbose='verbose=2')
 
 # %%
 lstm_model.summary()
@@ -220,3 +220,24 @@ plt.legend()
 plt.grid(True)
 plt.tight_layout()
 plt.show()
+
+
+
+#%%
+dpi = 600
+plt.figure(figsize=(16,8),dpi=dpi)
+
+plt.plot(valid_data.index, valid_data["Close"],
+         label="Actual Close",
+         color="green")
+plt.xlabel('Date')
+plt.ylabel('Closing Price')
+plt.title('Actual Close Prices')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+
+
+# %%

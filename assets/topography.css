@@ -110,13 +110,15 @@ h3 {
 /* table styling */
 
 #metrics-table {
+    background-color: #ffffff;
     display: block;
     margin-left: auto;
     margin-right: auto;
     align-items: center;
     text-align: center;
     border-collapse: collapse;
-    width: 70%;
+    min-width: 50%;
+    width: max-content;
 }
 
 /* Style table headers */
@@ -131,7 +133,9 @@ h3 {
 }
 
 #metrics-table tr:hover {
-    background-color: transparent;
+    background-color: #008128;
+    font-size:larger;
+    /* color: #ffffff; */
 }
 
 /* Style table cells */
@@ -140,6 +144,41 @@ h3 {
     border: 1px solid #ccc;
 }
 
+
+
+#update-table {
+    background-color: #ffffff;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+    text-align: center;
+    border-collapse: collapse;
+    width: 70%;
+    width: max-content;
+}
+
+/* Style table headers */
+#update-table th {
+    text-align: center;
+    background-color: #0074D9;
+    color: #ffffff;
+}
+
+#update-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#update-table tr:hover {
+    background-color: #9154f3;
+    font-size:larger;
+}
+
+/* Style table cells */
+#update-table td {
+    padding: 8px;
+    border: 1px solid #ccc;
+}
 
 
 /* pane */
