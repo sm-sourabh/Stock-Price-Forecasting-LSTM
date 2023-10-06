@@ -36,9 +36,9 @@ Run the stock_app.py script to launch the interactive dashboard built with Plotl
 
 ## Results
 
-![Dashboard-1](https://github.com/sm-sourabh/Stock-Price-Forecasting-LSTM/blob/main/images/Dashboard-1.png)
-!Dashboard-1](https://github.com/sm-sourabh/Stock-Price-Forecasting-LSTM/blob/main/images/Dashboard-2.png)
-![Dashboard-1](https://github.com/sm-sourabh/Stock-Price-Forecasting-LSTM/blob/main/images/Dashboard-3.png)
+![Dashboard-1](images/Dashboard-1.png)
+![Dashboard-1](images/Dashboard-2.png)
+![Dashboard-1](images/Dashboard-3.png)
 
 
 

@@ -17,6 +17,7 @@ from keras.layers import LSTM,Dropout,Dense
 from keras.callbacks import EarlyStopping
 from matplotlib.pylab import rcParams
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import mean_absolute_error, mean_squared_error,r2_score
 
 # %% [markdown]
 # DATA EXTRACTION
@@ -149,7 +150,7 @@ lstm_model.add(Dense(1))
 lstm_model.compile(loss='mean_squared_error',optimizer='adam')
 
 early_stop = EarlyStopping(monitor='val_loss', patience=4, verbose=1, restore_best_weights=True)
-lstm_model.fit(x_train_data,y_train_data,epochs=10,batch_size=32, validation_data=(x_valid_data, y_valid_data), callbacks=[early_stop], verbose='verbose=2')
+lstm_model.fit(x_train_data,y_train_data,epochs=1,batch_size=32, validation_data=(x_valid_data, y_valid_data), callbacks=[early_stop], verbose='verbose=2')
 
 # %%
 inputs_data=new_dataset[len(new_dataset)-len(valid_data)-window_size:].values
@@ -165,14 +166,6 @@ for i in range(window_size, inputs_data.shape[0]):
 x_test_data, y_test_data = np.array(x_test_data), np.array(y_test_data)
 x_test_data = np.reshape(x_test_data, (x_test_data.shape[0], x_test_data.shape[1], 1))
 
-# %%
-# Model Summary
-test_loss = lstm_model.evaluate(x_test_data, y_test_data)
-print("Test Loss:", test_loss)
-lstm_model.summary()
-
-# saving the outcome in .h5 file
-lstm_model.save("data/saved_lstm_model.h5")
 
 # %% [markdown]
 # PREDICTIONS BY LSTM MODEL
@@ -190,6 +183,30 @@ valid_data['Predictions'] = closing_price
 
 valid_data.to_csv("data/lstm_predictions.csv")
 
+# %% [markdown]
+# Model Summary
+
+# %%
+#model Summary
+test_loss = lstm_model.evaluate(x_test_data, y_test_data)
+print("Test Loss:", test_loss)
+lstm_model.summary()
+
+# REGREESION METRICS FOR MODEL
+mae = mean_absolute_error(valid_data["Close"], valid_data["Predictions"])
+print("mean_absolute_error",mae)
+
+mse = mean_squared_error(valid_data["Close"], valid_data["Predictions"])
+print("mean_squared_error",mse)
+
+rmse = np.sqrt(mean_squared_error(valid_data["Close"], valid_data["Predictions"]))
+print("root_mean_squared_error",rmse)
+
+r2 = r2_score(valid_data["Close"], valid_data["Predictions"])
+print("r-squared_score",r2)
+
+# saving the outcome in .h5 file
+lstm_model.save("data/saved_lstm_model.h5")
 
 # %% [markdown]
 ## GRAPH PLOTING

@@ -50,28 +50,6 @@ df_pred.index = df_pred['Date']
 df_pred = df_pred.sort_index(ascending=False, axis=0)
 df_pred = df_pred.drop('Date', axis=1)
 
-# %% [markdown]
-# REGREESION METRICS FOR MODEL
-
-# %%
-from sklearn.metrics import mean_absolute_error, mean_squared_error,r2_score
-
-# %%
-mae = mean_absolute_error(df_pred["Close"], df_pred["Predictions"])
-print("mean_absolute_error",mae)
-
-
-mse = mean_squared_error(df_pred["Close"], df_pred["Predictions"])
-print("mean_squared_error",mse)
-
-
-rmse = np.sqrt(mean_squared_error(df_pred["Close"], df_pred["Predictions"]))
-print("root_mean_squared_error",rmse)
-
-r2 = r2_score(df_pred["Close"], df_pred["Predictions"])
-print("r-squared_score",r2)
-
-# %%
 
 recent_data = df_pred.head(4)
 
@@ -87,10 +65,10 @@ recent_data['Date'] = recent_data.index
 
 # %%
 regression_metrics = {
-    'MAE': mae,
-    'MSE': mse,
-    'RMSE': rmse,
-    'R2': r2
+    'MAE': stock_pred.mae,
+    'MSE': stock_pred.mse,
+    'RMSE': stock_pred.rmse,
+    'R2': stock_pred.r2
 }
 
 # %% [markdown]
