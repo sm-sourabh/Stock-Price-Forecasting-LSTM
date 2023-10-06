@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 
 from keras.models import Sequential
 from keras.layers import LSTM,Dropout,Dense
+from keras.callbacks import EarlyStopping
 from matplotlib.pylab import rcParams
 from sklearn.preprocessing import MinMaxScaler
 
@@ -84,92 +85,125 @@ plt.plot(df["Close"],label='Close Price history')
 # data sorting 
 data=df.sort_index(ascending=True,axis=0)
 new_dataset=pd.DataFrame(index=range(0,len(df)),columns=['Date','Close'])
-
 new_dataset = data[['Date', 'Close']].copy()
-
 new_dataset.index=new_dataset.Date
-
 new_dataset.drop("Date",axis=1,inplace=True)
-
 final_dataset=new_dataset.values
 
 # %% [markdown]
 # DATA SPLIT INTO TEST AND TRAIN
 # %%
 total_sample = final_dataset.shape[0]
-train_sample = int(0.8 * total_sample)
+train_size = int(0.8 * total_sample)
+valid_size = int(0.1 * train_size)
 
 # %%
-train_data=final_dataset[0:train_sample,:]
-valid_data=final_dataset[train_sample:,:]
+train_data = final_dataset[0:train_size,:]
+test_data = final_dataset[train_size-valid_size:train_size, :]
+valid_data = final_dataset[train_size:, :]
+
 
 # %%
 scaler=MinMaxScaler(feature_range=(0,1))
-scaled_data=scaler.fit_transform(final_dataset)
+scaled_train_data = scaler.fit_transform(train_data)
+scaled_valid_data = scaler.transform(test_data)
+scaled_test_data = scaler.transform(valid_data)
 
+
+# %%
+window_size = 60
+
+# %%[markdown]
+# Creating NP-Arrys for LSTM Model
 # %%
 x_train_data,y_train_data=[],[]
 
-# %%
-scaled_data[0:60,0]
-scaled_data[120,0]
+for i in range(window_size,len(scaled_train_data)):
+    x_train_data.append(scaled_train_data[i-window_size:i,0])
+    y_train_data.append(scaled_train_data[i,0])
 
-# %%
-for i in range(60,len(train_data)):
-    x_train_data.append(scaled_data[i-60:i,0])
-    y_train_data.append(scaled_data[i,0])
-
-# %%
 x_train_data,y_train_data=np.array(x_train_data),np.array(y_train_data)
 x_train_data=np.reshape(x_train_data,(x_train_data.shape[0],x_train_data.shape[1],1))
+
+# %%
+x_valid_data, y_valid_data = [], []
+
+for i in range(window_size, len(scaled_valid_data)):
+    x_valid_data.append(scaled_valid_data[i - window_size:i, 0])
+    y_valid_data.append(scaled_valid_data[i, 0])
+
+x_valid_data, y_valid_data = np.array(x_valid_data), np.array(y_valid_data)
+x_valid_data = np.reshape(x_valid_data, (x_valid_data.shape[0], x_valid_data.shape[1], 1))
 
 # %% [markdown]
 # LSTM MODEL BUILDING
 # %%
 lstm_model=Sequential()
 lstm_model.add(LSTM(units=50,return_sequences=True,input_shape=(x_train_data.shape[1],1)))
+lstm_model.add(Dropout(0.2))
 lstm_model.add(LSTM(units=50))
+lstm_model.add(Dropout(0.2))
 lstm_model.add(Dense(1))
 
-# %%
+# model compilation
 lstm_model.compile(loss='mean_squared_error',optimizer='adam')
-lstm_model.fit(x_train_data,y_train_data,epochs=10,batch_size=1,verbose='verbose=2')
+
+early_stop = EarlyStopping(monitor='val_loss', patience=4, verbose=1, restore_best_weights=True)
+lstm_model.fit(x_train_data,y_train_data,epochs=10,batch_size=32, validation_data=(x_valid_data, y_valid_data), callbacks=[early_stop], verbose='verbose=2')
 
 # %%
-lstm_model.summary()
-
-# %%
-inputs_data=new_dataset[len(new_dataset)-len(valid_data)-60:].values
+inputs_data=new_dataset[len(new_dataset)-len(valid_data)-window_size:].values
 inputs_data=inputs_data.reshape(-1,1)
 inputs_data=scaler.transform(inputs_data)
 
-# %%
-X_test=[]
-for i in range(60,inputs_data.shape[0]):
-    X_test.append(inputs_data[i-60:i,0])
-X_test=np.array(X_test)
+x_test_data, y_test_data = [], []
+
+for i in range(window_size, inputs_data.shape[0]):
+    x_test_data.append(inputs_data[i - window_size:i, 0])
+    y_test_data.append(inputs_data[i, 0])
+
+x_test_data, y_test_data = np.array(x_test_data), np.array(y_test_data)
+x_test_data = np.reshape(x_test_data, (x_test_data.shape[0], x_test_data.shape[1], 1))
 
 # %%
-X_test=np.reshape(X_test,(X_test.shape[0],X_test.shape[1],1))
-closing_price=lstm_model.predict(X_test)
-closing_price=scaler.inverse_transform(closing_price)
+# Model Summary
+test_loss = lstm_model.evaluate(x_test_data, y_test_data)
+print("Test Loss:", test_loss)
+lstm_model.summary()
 
-# %%
 # saving the outcome in .h5 file
 lstm_model.save("data/saved_lstm_model.h5")
 
+# %% [markdown]
+# PREDICTIONS BY LSTM MODEL
 # %%
-# ploting the outputs
-train_data=new_dataset[:train_sample]
-valid_data=new_dataset[train_sample:]
-valid_data['Predictions']=closing_price
-plt.plot(train_data["Close"])
-plt.plot(valid_data[['Close',"Predictions"]])
+
+closing_price=lstm_model.predict(x_test_data)
+closing_price=scaler.inverse_transform(closing_price)
+
+# %%
+# saving the predictions to csv
+train_data=new_dataset[:train_size-valid_size]
+test_data=new_dataset[train_size-valid_size:train_size]
+valid_data=new_dataset[train_size:]
+valid_data['Predictions'] = closing_price
+
+valid_data.to_csv("data/lstm_predictions.csv")
+
 
 # %% [markdown]
 ## GRAPH PLOTING
+
 # %%
+# ploting the outputs
+
+plt.plot(train_data["Close"])
+plt.plot(test_data["Close"])
+plt.plot(valid_data[['Close',"Predictions"]])
+
 dpi = 600
+
+
 plt.figure(figsize=(16,8),dpi=dpi)
 
 plt.plot(train_data.index, train_data["Close"],
@@ -183,9 +217,7 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 
-# %%
 
-dpi = 600
 plt.figure(figsize=(16,8),dpi=dpi)
 plt.plot(valid_data.index, valid_data['Close'],
          label="Validation Data",
@@ -201,15 +233,17 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 
-# %%
-dpi = 600
+
 plt.figure(figsize=(16,8),dpi=dpi)
 plt.plot(train_data.index, train_data["Close"],
          label="Training Data",
-         color="#0055b2")
+         color="Blue")
+plt.plot(test_data.index, test_data['Close'],
+         label='Test Data',
+         color='DarkOrange')
 plt.plot(valid_data.index, valid_data['Close'],
          label="Validation Data",
-         color="green")
+         color="Green")
 plt.plot(valid_data.index, valid_data["Predictions"],
          label="Predictions",
          color="red")
@@ -222,9 +256,6 @@ plt.tight_layout()
 plt.show()
 
 
-
-#%%
-dpi = 600
 plt.figure(figsize=(16,8),dpi=dpi)
 
 plt.plot(valid_data.index, valid_data["Close"],
@@ -237,7 +268,6 @@ plt.legend()
 plt.grid(True)
 plt.tight_layout()
 plt.show()
-
 
 
 # %%

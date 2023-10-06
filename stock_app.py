@@ -1,10 +1,22 @@
 # %% [markdown]
-# # PYTHON LIBRARIES
+##  LOADING stock_pred.py
+# stock_pred.py
 
+# %%
+import stock_pred
+
+# %% [markdown]
+## LOADING stock_app.py
+# stock_app.py
 # %% [markdown]
 # LOADING PYTHON LIBRARIES
 
 # %%
+# python Libraries
+import pandas as pd
+import numpy as np
+
+
 # dash Libraries
 import dash
 from dash import dcc
@@ -15,16 +27,7 @@ from dash.dependencies import Input, Output
 # plotly Libraries
 import plotly.graph_objects as go
 
-# pandas Libraries
-import pandas as pd
 
-
-# keras Library
-from keras.models import load_model
-from sklearn.preprocessing import MinMaxScaler
-
-# numpy Library
-import numpy as np
 
 # %% [markdown]
 # DATA CLEANING AND SCALING
@@ -33,88 +36,19 @@ import numpy as np
 # dataset reading
 df_nse = pd.read_csv("data/TATACONSUM.NS_historical_data.csv")
 df = pd.read_csv("data/stock_data.csv")
+df_pred = pd.read_csv("data/lstm_predictions.csv")
 
 # %%
 # index formatting
 df_nse["Date"]=pd.to_datetime(df_nse.Date,format="%Y-%m-%d")
 df_nse.index=df_nse['Date']
 df_nse = df_nse.sort_index(ascending=False, axis=0)
+df_nse = df_nse.drop('Date', axis=1)
 
-# %%
-# data sorting
-data=df_nse.sort_index(ascending=True,axis=0)
-new_data=pd.DataFrame(index=range(0,len(df_nse)),columns=['Date','Close'])
-
-# %%
-for i in range(0,len(data)):
-    new_data["Date"][i]=data['Date'][i]
-    new_data["Close"][i]=data["Close"][i]
-
-new_data.index=new_data.Date
-new_data.drop("Date",axis=1,inplace=True)
-
-dataset=new_data.values
-
-# %% [markdown]
-# Dataset split to Train and Test
-
-# %%
-total_sample = dataset.shape[0]
-train_sample = int(0.8 * total_sample)
-
-# %%
-train=dataset[0:train_sample,:]
-valid=dataset[train_sample:,:]
-
-# %% [markdown]
-# Scaling of data
-
-# %%
-scaler=MinMaxScaler(feature_range=(0,1))
-scaled_data=scaler.fit_transform(dataset)
-
-# %%
-x_train, y_train = [],[]
-
-for i in range(60,len(train)):
-    x_train.append(scaled_data[i-60:i,0])
-    y_train.append(scaled_data[i,0])
-
-# %%
-x_train,y_train=np.array(x_train),np.array(y_train)
-x_train=np.reshape(x_train,(x_train.shape[0],x_train.shape[1],1))
-
-# %% [markdown]
-# MODEL LOADING
-
-# %%
-model = load_model("data/saved_lstm_model.h5")
-
-# %%
-inputs=new_data[len(new_data)-len(valid)-60:].values
-inputs=inputs.reshape(-1,1)
-inputs=scaler.transform(inputs)
-
-# %%
-X_test=[]
-for i in range(60,inputs.shape[0]):
-    X_test.append(inputs[i-60:i,0])
-X_test=np.array(X_test)
-
-X_test=np.reshape(X_test,(X_test.shape[0],X_test.shape[1],1))
-closing_price=model.predict(X_test)
-closing_price=scaler.inverse_transform(closing_price)
-
-# %% [markdown]
-# DATASET SPLIT TO VALIDATION AND TRAINING
-
-# %%
-train=new_data[:train_sample]
-valid=new_data[train_sample:]
-# valid['Predictions']=closing_price
-
-# %%
-valid.loc[:,['Predictions']] = closing_price
+df_pred["Date"]=pd.to_datetime(df_pred.Date,format="%Y-%m-%d")
+df_pred.index = df_pred['Date']
+df_pred = df_pred.sort_index(ascending=False, axis=0)
+df_pred = df_pred.drop('Date', axis=1)
 
 # %% [markdown]
 # REGREESION METRICS FOR MODEL
@@ -123,23 +57,23 @@ valid.loc[:,['Predictions']] = closing_price
 from sklearn.metrics import mean_absolute_error, mean_squared_error,r2_score
 
 # %%
-mae = mean_absolute_error(valid["Close"], valid["Predictions"])
+mae = mean_absolute_error(df_pred["Close"], df_pred["Predictions"])
 print("mean_absolute_error",mae)
 
 
-mse = mean_squared_error(valid["Close"], valid["Predictions"])
+mse = mean_squared_error(df_pred["Close"], df_pred["Predictions"])
 print("mean_squared_error",mse)
 
 
-rmse = np.sqrt(mean_squared_error(valid["Close"], valid["Predictions"]))
+rmse = np.sqrt(mean_squared_error(df_pred["Close"], df_pred["Predictions"]))
 print("root_mean_squared_error",rmse)
 
-r2 = r2_score(valid["Close"], valid["Predictions"])
+r2 = r2_score(df_pred["Close"], df_pred["Predictions"])
 print("r-squared_score",r2)
 
 # %%
 
-recent_data = valid.tail(4)
+recent_data = df_pred.head(4)
 
 recent_data['Close'] = pd.to_numeric(recent_data['Close'], errors='coerce')
 recent_data['Predictions'] = pd.to_numeric(recent_data['Predictions'], errors='coerce')
@@ -187,10 +121,17 @@ app.layout = html.Div([
 					figure={
 						"data":[
 							go.Scatter(
-								x=train.index,
-								y=train["Close"],
-								mode='lines'
-							)
+								x=stock_pred.train_data.index,
+								y=stock_pred.train_data["Close"],
+								mode='lines',
+                                name='Training Data'
+							),
+                            go.Scatter(
+                                x=stock_pred.test_data.index,
+                                y=stock_pred.test_data["Close"],
+                                mode='lines',
+                                name='Validation Data'
+                            )
 
 						],
 						"layout":go.Layout(
@@ -236,8 +177,8 @@ app.layout = html.Div([
 						figure={
 							"data":[
 								go.Scatter(
-									x=valid.index,
-									y=valid["Predictions"],
+									x=df_pred.index,
+									y=df_pred["Predictions"],
 									mode='lines'
 								)
 							],
@@ -380,8 +321,8 @@ def update_graph_closing(selected_dropdown_close):
     trace1=[]
     for stock in selected_dropdown_close:
         trace1.append(
-            go.Scatter(x=valid.index,
-                       y=valid[stock],
+            go.Scatter(x=df_pred.index,
+                       y=df_pred[stock],
                        mode = 'lines', opacity=0.7,
                        name=f'{dropdown[stock]} Closing ', textposition='bottom center'))
         
@@ -474,3 +415,5 @@ if __name__ == '__main__':
     app.run_server(debug=True, use_reloader=False)
 
 
+
+# %%
