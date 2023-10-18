@@ -6,10 +6,7 @@
 import stock_pred
 
 # %% [markdown]
-## LOADING stock_app.py
-# stock_app.py
-# %% [markdown]
-# LOADING PYTHON LIBRARIES
+## LOADING PYTHON LIBRARIES
 
 # %%
 # python Libraries
@@ -26,8 +23,6 @@ from dash.dependencies import Input, Output
 
 # plotly Libraries
 import plotly.graph_objects as go
-
-
 
 # %% [markdown]
 # DATA CLEANING AND SCALING
