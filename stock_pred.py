@@ -80,14 +80,14 @@ plt.plot(df["Close"],label='Close Price history')
 cols_plot=['Open','High','Low','Close','Adj Close']
 colors = ['blue', 'green', 'red', 'purple', 'orange']
 dpi = 600
-fig,axes=plt.subplots(nrows=len(cols_plot),figsize=(20,5*len(cols_plot)), dpi=dpi)
+fig,axes=plt.subplots(nrows=len(cols_plot),figsize=(16,7*len(cols_plot)), dpi=dpi)
 for i, col in enumerate(cols_plot):
     df[col].plot(ax=axes[i], alpha=1, color=colors[i], label=col, fontsize=16)
-    axes[i].set_ylabel(col + ' Variation')
-    axes[i].set_xlabel('Date')
+    axes[i].set_ylabel(col + ' Variation', fontsize=18)
+    axes[i].set_xlabel('Date', fontsize=18)
     axes[i].grid(True)
-    axes[i].legend()
-fig.suptitle('Stock Price Variations', fontsize=20)
+    axes[i].legend(fontsize=14)
+fig.suptitle('Stock Price Variations', fontsize=26)
 plt.tight_layout()
 plt.show()
 
@@ -171,8 +171,8 @@ x_test_data = np.reshape(x_test_data, (x_test_data.shape[0], x_test_data.shape[1
 # %%
 # MODEL STRUCTURE
 unit = 50
-patience = 5
-epoch = 10
+patience = 20
+epoch = 50
 batchsize = 64
 
 lstm_model=Sequential()
@@ -246,10 +246,13 @@ plt.figure(figsize=(16,8),dpi=dpi)
 plt.plot(train_data.index, train_data["Close"],
          label="Training Data",
          color="#0055b2")
-plt.xlabel('Date')
-plt.ylabel('Closing Price')
-plt.title('Training Stock Data')
-plt.legend()
+plt.plot(test_data.index, test_data['Close'],
+         label='Validation Data',
+         color='DarkOrange')
+plt.xlabel('Date', fontsize=18)
+plt.ylabel('Closing Price', fontsize=18)
+plt.title('Training and Validation Stock Data', fontsize=26)
+plt.legend(fontsize=14)
 plt.grid(True)
 plt.tight_layout()
 plt.show()
@@ -259,10 +262,10 @@ plt.figure(figsize=(16,8),dpi=dpi)
 plt.plot(valid_data.index, valid_data["Close"],
          label="Actual Close",
          color="green")
-plt.xlabel('Date')
-plt.ylabel('Closing Price')
-plt.title('Actual Close Prices')
-plt.legend()
+plt.xlabel('Date', fontsize=18)
+plt.ylabel('Closing Price', fontsize=18)
+plt.title('Actual Close Prices', fontsize=26)
+plt.legend(fontsize=14)
 plt.grid(True)
 plt.tight_layout()
 plt.show()
@@ -271,15 +274,15 @@ dpi = 600
 
 plt.figure(figsize=(16,8),dpi=dpi)
 plt.plot(valid_data.index, valid_data['Close'],
-         label="Validation Data",
+         label="Actual Prices",
          color="green")
 plt.plot(valid_data.index, valid_data["Predictions"],
          label="Predictions",
          color="red")
-plt.xlabel('Date')
-plt.ylabel('Closing Price')
-plt.title('Comparision of Actual and Predicted Values')
-plt.legend()
+plt.xlabel('Date',fontsize=18)
+plt.ylabel('Closing Price',fontsize=18)
+plt.title('Comparision of Actual and Predicted Values',fontsize=26)
+plt.legend(fontsize=14)
 plt.grid(True)
 plt.tight_layout()
 plot_title = "Comparision of Actual and Predicted Values"
@@ -297,18 +300,18 @@ plt.plot(train_data.index, train_data["Close"],
          label="Training Data",
          color="Blue")
 plt.plot(test_data.index, test_data['Close'],
-         label='Test Data',
+         label='Validation Data',
          color='DarkOrange')
 plt.plot(valid_data.index, valid_data['Close'],
-         label="Validation Data",
+         label="Test Data",
          color="Green")
 plt.plot(valid_data.index, valid_data["Predictions"],
          label="Predictions",
          color="red")
-plt.xlabel('Date')
-plt.ylabel('Closing Price')
-plt.title('Stock Price Prediction')
-plt.legend()
+plt.xlabel('Date',fontsize=18)
+plt.ylabel('Closing Price',fontsize=18)
+plt.title('Stock Price Prediction',fontsize=26)
+plt.legend(fontsize=14)
 plt.grid(True)
 plt.tight_layout()
 plot_title = "Stock Price Prediction"
