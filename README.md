@@ -13,7 +13,7 @@ The subsequent phase involves crafting an interactive dashboard using Plotly Das
 ## Repository Structure
 The repository is organized as follows:
 - **assets:** This directory contains the CSS file used for styling the dashboard.
-- **data:** Essential data files are stored here, including `lstm_prediction.csv` files, the trained LSTM model `model.h5`, raw stock data, and `model_performance.xlsx` for detailed model evaluation.
+- **data:** Essential data files are stored here, including `lstm_prediction.csv` files, the trained LSTM model `saved_lstm_model.h5`, raw stock data, and `model_performance.xlsx` for detailed model evaluation.
 - **images:** Screenshots capturing the essence of the dashboard and key visualizations are housed in this directory.
 - **plots:** Every plot generated in the project, such as actual closing stock prices, data split plots, and various iterations of predicted values, can be found here.
 - **README.md**: You are here! This file provides an overview of the project, its components, and instructions to set up and run the code.
