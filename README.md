@@ -74,3 +74,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 We extend our gratitude to the open-source community for creating tools such as TensorFlow, Plotly Dash, and other libraries that have made this project possible.
 
+## Contributors
+Thanks to the following contributors who have helped make this project better:
+
+- [Parmeet Singh](https://github.com/Meet110201)
+- [Sourabh Mehta](https://github.com/sm-sourabh)
