@@ -1,9 +1,13 @@
-# %% [markdown]
-## PYTHON LIBRARIES
+#!/usr/bin/env python
+# coding: utf-8
 
-# %% [markdown]
-# LOADING PYTHON LIBRARIES
-# %%
+# # PYTHON LIBRARIES
+
+#  LOADING PYTHON LIBRARIES
+
+# In[1]:
+
+
 # libraries
 import pandas as pd
 import numpy as np
@@ -20,9 +24,12 @@ from matplotlib.pylab import rcParams
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_absolute_error, mean_squared_error,r2_score
 
-# %% [markdown]
-# FUNCTIONS AND CLASSES
-# %%
+
+#  FUNCTIONS AND CLASSES
+
+# In[23]:
+
+
 # function definations
 
 # data extract fun
@@ -54,28 +61,40 @@ def timestmp():
     timestp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     return timestp
 
-# %% [markdown]
-# DATA EXTRACTION
-# %%
+
+#  DATA EXTRACTION
+
+# In[24]:
+
+
 #calling the data extract function
 if __name__ == "__main__":
     ticker_symbol = "TATACONSUM.NS"
     extract_data(ticker_symbol)
 
-# %% [markdown]
-## DATA PREPROCESSING
-# %%
+
+# # DATA PREPROCESSING
+
+# In[25]:
+
+
 # LOADING THE CSV FILE
 df=pd.read_csv("data/TATACONSUM.NS_historical_data.csv")
-# %% [markdown]
-# DATA OVERVIEW
 
-# %%
+
+#  DATA OVERVIEW
+
+# In[5]:
+
+
 # ploting the graphs
 plt.figure(figsize=(16,8))
 plt.plot(df["Close"],label='Close Price history')
 
-# %%
+
+# In[6]:
+
+
 #plotting all variables
 cols_plot=['Open','High','Low','Close','Adj Close']
 colors = ['blue', 'green', 'red', 'purple', 'orange']
@@ -91,12 +110,18 @@ fig.suptitle('Stock Price Variations', fontsize=26)
 plt.tight_layout()
 plt.show()
 
-# %%
+
+# In[7]:
+
+
 # changing the index to Date
 df["Date"]=pd.to_datetime(df.Date,format="%Y-%m-%d")
 df.index=df["Date"]
 
-# %%
+
+# In[8]:
+
+
 # data sorting 
 data=df.sort_index(ascending=True,axis=0)
 new_dataset=pd.DataFrame(index=range(0,len(df)),columns=['Date','Close'])
@@ -105,7 +130,10 @@ new_dataset.index=new_dataset.Date
 new_dataset.drop("Date",axis=1,inplace=True)
 final_dataset=new_dataset.values
 
-# %%
+
+# In[9]:
+
+
 # DATA SPLIT INTO TEST AND TRAIN
 train_split = 0.8
 valid_split = 0.1
@@ -117,21 +145,31 @@ train_data = final_dataset[0:train_size,:]
 test_data = final_dataset[train_size-valid_size:train_size, :]
 valid_data = final_dataset[train_size:, :]
 
-# %% [markdown]
-# DATA SCALING
-# %%
+
+#  DATA SCALING
+
+# In[10]:
+
+
 # defining scaling variables and elements
 scaler=MinMaxScaler(feature_range=(0,1))
 scaled_train_data = scaler.fit_transform(train_data)
 scaled_valid_data = scaler.transform(test_data)
 scaled_test_data = scaler.transform(valid_data)
 
-# %%[markdown]
-# Creating NP-Arrys for LSTM Model
-# %%
+
+#  Creating NP-Arrys for LSTM Model
+
+# In[11]:
+
+
 #defining window size
 window_size = 60
-# %%
+
+
+# In[12]:
+
+
 x_train_data,y_train_data=[],[]
 
 for i in range(window_size,len(scaled_train_data)):
@@ -141,7 +179,10 @@ for i in range(window_size,len(scaled_train_data)):
 x_train_data,y_train_data=np.array(x_train_data),np.array(y_train_data)
 x_train_data=np.reshape(x_train_data,(x_train_data.shape[0],x_train_data.shape[1],1))
 
-# %%
+
+# In[13]:
+
+
 x_valid_data, y_valid_data = [], []
 
 for i in range(window_size, len(scaled_valid_data)):
@@ -151,7 +192,10 @@ for i in range(window_size, len(scaled_valid_data)):
 x_valid_data, y_valid_data = np.array(x_valid_data), np.array(y_valid_data)
 x_valid_data = np.reshape(x_valid_data, (x_valid_data.shape[0], x_valid_data.shape[1], 1))
 
-# %%
+
+# In[14]:
+
+
 x_test_data, y_test_data = [], []
 
 inputs_data=new_dataset[len(new_dataset)-len(valid_data)-window_size:].values
@@ -166,13 +210,21 @@ for i in range(window_size, inputs_data.shape[0]):
 x_test_data, y_test_data = np.array(x_test_data), np.array(y_test_data)
 x_test_data = np.reshape(x_test_data, (x_test_data.shape[0], x_test_data.shape[1], 1))
 
-# %% [markdown]
-# LSTM MODEL BUILDING
-# %%
-# MODEL STRUCTURE
+
+#  LSTM MODEL BUILDING
+
+# In[15]:
+
+
+# MODEL STRUCTURE for Best Acccuracy
+# unit = 50
+# patience = 20
+# epoch = 50
+# batchsize = 64
+
 unit = 50
 patience = 20
-epoch = 50
+epoch = 10
 batchsize = 64
 
 lstm_model=Sequential()
@@ -182,7 +234,10 @@ lstm_model.add(LSTM(units=unit))
 lstm_model.add(Dropout(0.2))
 lstm_model.add(Dense(1))
 
-# %%
+
+# In[16]:
+
+
 # model compilation
 lstm_model.compile(loss='mean_squared_error',optimizer='adam')
 
@@ -192,29 +247,36 @@ lstm_model.fit(x_train_data,y_train_data,epochs=epoch,batch_size=batchsize, vali
 # saving the outcome in .h5 file
 lstm_model.save("data/saved_lstm_model.h5")
 
-# %% [markdown]
-# PREDICTIONS BY LSTM MODEL
-# %%
+
+#  PREDICTIONS BY LSTM MODEL
+
+# In[17]:
+
+
 # predicting closing prices
 timestpp = timestmp()
 closing_price=lstm_model.predict(x_test_data)
 closing_price=scaler.inverse_transform(closing_price)
 
 
-# %%
+# In[18]:
+
+
 # saving the predictions to csv
 train_data=new_dataset[:train_size-valid_size]
 test_data=new_dataset[train_size-valid_size:train_size]
 valid_data=new_dataset[train_size:]
 valid_data['Predictions'] = closing_price
 
-valid_data.to_csv(f"data/lstm_predictions_{timestpp}.csv")
+#valid_data.to_csv(f"data/lstm_predictions_{timestpp}.csv")
 valid_data.to_csv("data/lstm_predections.csv")
 
-# %% [markdown]
-# Model Summary
 
-# %%
+#  Model Summary
+
+# In[19]:
+
+
 #model Summary
 test_loss = lstm_model.evaluate(x_test_data, y_test_data)
 print("Test Loss:", test_loss)
@@ -233,10 +295,12 @@ print("root_mean_squared_error",rmse)
 r2 = r2_score(valid_data["Close"], valid_data["Predictions"])
 print("r-squared_score",r2)
 
-# %% [markdown]
-## GRAPH PLOTING
 
-# %%
+# # GRAPH PLOTING
+
+# In[20]:
+
+
 # ploting the outputs
 dpi = 600
 
@@ -286,13 +350,13 @@ plt.legend(fontsize=14)
 plt.grid(True)
 plt.tight_layout()
 plot_title = "Comparision of Actual and Predicted Values"
-saved = save_plot(plt.gcf(),plot_title,epoch,batchsize,patience,timestpp)
+#saved = save_plot(plt.gcf(),plot_title,epoch,batchsize,patience,timestpp)
 plt.show()
 
-if saved:
-    print(f"Plot saved_{plot_title}")
-else:
-    print("Error : Plot not saved")
+# if saved:
+#     print(f"Plot saved_{plot_title}")
+# else:
+#     print("Error : Plot not saved")
 
 
 plt.figure(figsize=(16,8),dpi=dpi)
@@ -315,18 +379,20 @@ plt.legend(fontsize=14)
 plt.grid(True)
 plt.tight_layout()
 plot_title = "Stock Price Prediction"
-saved = save_plot(plt.gcf(),plot_title,epoch,batchsize,patience,timestpp)
+#saved = save_plot(plt.gcf(),plot_title,epoch,batchsize,patience,timestpp)
 plt.show()
 
-if saved:
-    print(f"Plot saved_{plot_title}")
-else:
-    print("Error : Plot not saved")
+# if saved:
+#     print(f"Plot saved_{plot_title}")
+# else:
+#     print("Error : Plot not saved")
 
-# %% [markdown]
-# Updating Excel File (model_perfornmace.xlsx)
 
-# %%
+#  Updating Excel File (model_perfornmace.xlsx)
+
+# In[21]:
+
+
 # Define the Excel file path
 excel_file = ('data/model_performance.xlsx')
 
@@ -370,7 +436,10 @@ def append_variables_to_excel(timestp ,data_split, units, patience, epochs, batc
 
 append_variables_to_excel(timestpp,train_split, unit, patience, epoch, batchsize,  mae, mse, rmse, test_loss, r2)
 
- # %%
+
+# In[22]:
+
+
 
 # # predicting value ahead of test data points   
 # last_data_point = x_test_data[-1]
@@ -387,4 +456,25 @@ append_variables_to_excel(timestpp,train_split, unit, patience, epoch, batchsize
 # x_test_data = x_test_data[1:]
 # x_test_data = np.append(x_test_data, predict_val)
 
-# %%
+
+# In[27]:
+
+
+from nbconvert import PythonExporter
+
+# Create a PythonExporter instance
+exporter = PythonExporter()
+
+# Extract the Python code from the current notebook
+python_code, _ = exporter.from_filename('stock_pred.ipynb')
+
+# Save the extracted Python code to a .py file
+with open('stock_pred.py', 'w') as f:
+    f.write(python_code)
+
+
+# In[ ]:
+
+
+
+
